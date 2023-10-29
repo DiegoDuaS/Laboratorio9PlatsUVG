@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package com.example.inventory.ui.home
+package com.example.inventory.data
 
-import androidx.lifecycle.ViewModel
-import com.example.inventory.data.Item
+import kotlinx.coroutines.flow.Flow
 
-/**
- * ViewModel to retrieve all items in the Room database.
- */
-class HomeViewModel : ViewModel() {
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
-    }
+class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository {
+    override fun getAllItemsStream(): Flow<List<Item>> = itemDao.getAllItems()
+
+    override fun getItemStream(id: Int): Flow<Item?> = itemDao.getItem(id)
+
+    override suspend fun insertItem(item: Item) = itemDao.insert(item)
+
+    override suspend fun deleteItem(item: Item) = itemDao.delete(item)
+
+    override suspend fun updateItem(item: Item) = itemDao.update(item)
 }
-
-/**
- * Ui State for HomeScreen
- */
-data class HomeUiState(val itemList: List<Item> = listOf())
